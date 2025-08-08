@@ -1,6 +1,0 @@
-Document to run docker on windows:
-
-	1. install xlaunch to get gui on docker : https://sourceforge.net/projects/vcxsrv/
-	2. run .exe and on first page set display number (-1) to 0
-	3. after pulling the lastest docker, run it with this command : docker run --name <nameWouldYouLike> -e DISPLAY=host.docker.internal:0.0 -it <ImageRepository:tag>
-	4. test with command : rviz2
