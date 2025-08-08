@@ -1,0 +1,25 @@
+moveit_setup_assistant_config:
+  urdf:
+    package: rosie_description
+    relative_path: urdf/rosie.urdf.xacro
+  srdf:
+    relative_path: config/rosie.srdf
+  package_settings:
+    author_name: Ludovic Montagnon
+    author_email: ludovic.montagnon@polymtl.ca
+    generated_timestamp: 1753122636
+  control_xacro:
+    command:
+      - position
+    state:
+      - position
+      - velocity
+  modified_urdf:
+    xacros:
+      - control_xacro
+  control_xacro:
+    command:
+      - position
+    state:
+      - position
+      - velocity

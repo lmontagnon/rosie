@@ -1,0 +1,223 @@
+<?xml version="1.0"?>
+
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="rosie">
+
+  <!-- Arguments -->
+  <xacro:arg name="left_prefix" default="left"/>
+  <xacro:arg name="left_arm"  default="gen3"/>
+  <xacro:arg name="left_gripper" default="robotiq_2f_85"/>
+  <xacro:arg name="left_dof"  default="7"/>
+  <xacro:arg name="left_vision" default="true"/>
+  <xacro:arg name="left_parent" default="left_arm_mount"/>
+  <xacro:arg name="left_gripper_joint_name" default="robotiq_85_left_knuckle_joint"/>
+  <xacro:arg name="left_robot_ip" default="192.168.42.191"/>
+  <xacro:arg name="left_username" default="admin"/>
+  <xacro:arg name="left_password" default="admin"/>
+  <xacro:arg name="left_port" default="10000"/>
+  <xacro:arg name="left_port_realtime" default="10001"/>
+  <xacro:arg name="left_session_inactivity_timeout_ms" default="60000"/>
+  <xacro:arg name="left_connection_inactivity_timeout_ms" default="2000"/>
+  <xacro:arg name="left_gripper_max_velocity" default="100.0" />
+  <xacro:arg name="left_gripper_max_force" default="100.0" />
+
+  <xacro:arg name="right_prefix" default="right"/>
+  <xacro:arg name="right_arm"  default="gen3"/>
+  <xacro:arg name="right_gripper" default="robotiq_2f_85"/>
+  <xacro:arg name="right_dof"  default="7"/>
+  <xacro:arg name="right_vision" default="true"/>
+  <xacro:arg name="right_parent" default="right_arm_mount"/>
+  <xacro:arg name="right_gripper_joint_name" default="robotiq_85_left_knuckle_joint"/>
+  <xacro:arg name="right_robot_ip" default="192.168.42.192"/>
+  <xacro:arg name="right_username" default="admin"/>
+  <xacro:arg name="right_password" default="admin"/>
+  <xacro:arg name="right_port" default="10000"/>
+  <xacro:arg name="right_port_realtime" default="10001"/>
+  <xacro:arg name="right_session_inactivity_timeout_ms" default="60000"/>
+  <xacro:arg name="right_connection_inactivity_timeout_ms" default="2000"/>
+  <xacro:arg name="right_gripper_max_velocity" default="100.0" />
+  <xacro:arg name="right_gripper_max_force" default="100.0" />
+
+  <xacro:arg name="use_internal_bus_gripper_comm" default="false" />
+  <xacro:arg name="use_fake_hardware" default="false" />
+  <xacro:arg name="mock_sensor_commands" default="false" />
+  <xacro:arg name="sim_gazebo" default="false" />
+  <xacro:arg name="sim_ignition" default="false" />
+  <xacro:arg name="sim_isaac" default="true" />
+  <!-- initial position for simulations (Mock Hardware, Gazebo, Ignition, Isaac) -->
+  <xacro:arg name="left_initial_positions_file" default="$(find rosie_description)/config/left_sim_initial_joint_positions.yaml"/>
+  <xacro:arg name="right_initial_positions_file" default="$(find rosie_description)/config/right_sim_initial_joint_positions.yaml"/>
+
+
+  <!-- include files --> 
+  <xacro:include filename="$(find rosie_description)/urdf/tracer_wheel_1.xacro" />
+  <xacro:include filename="$(find rosie_description)/urdf/tracer_wheel_2.xacro" />
+  <xacro:include filename="$(find rosie_description)/urdf/fr_castor.xacro" />
+  <xacro:include filename="$(find rosie_description)/urdf/fl_castor.xacro" />
+  <xacro:include filename="$(find rosie_description)/urdf/rr_castor.xacro" />
+  <xacro:include filename="$(find rosie_description)/urdf/rl_castor.xacro" />
+  <xacro:include filename="$(find rosie_description)/urdf/fr_wheel.xacro" />
+  <xacro:include filename="$(find rosie_description)/urdf/fl_wheel.xacro" />
+  <xacro:include filename="$(find rosie_description)/urdf/rr_wheel.xacro" />
+  <xacro:include filename="$(find rosie_description)/urdf/rl_wheel.xacro" />
+  <xacro:include filename="$(find rosie_description)/urdf/zed_descr.xacro" />
+  <xacro:include filename="$(find rosie_description)/urdf/zed_macro.xacro" />
+  <xacro:include filename="$(find kortex_description)/robots/kortex_robot.xacro" />    
+ 
+  <!-- Variables -->
+  <xacro:property name="M_PI" value="3.14159"/>
+
+  <!-- Vehicle Geometries -->
+  <xacro:property name="base_x_size" value="0.6200000" />
+  <xacro:property name="base_y_size" value="0.585000" />
+  <xacro:property name="base_z_size" value="0.235000" />
+
+  <xacro:property name="wheelbase" value="0.34"/><!--0.33515-->
+  <xacro:property name="track" value="0.37910" /><!--0.37810-->
+
+  <xacro:property name="castor_length" value="0.002"/>
+  <xacro:property name="castor_radius" value="0.03724" />
+
+  <xacro:property name="wheel_vertical_offset" value="-0.082" />
+  <xacro:property name="castor_offset" value="0.03" />
+
+  <xacro:property name="wheel_length" value="0.8e-01" />
+  <xacro:property name="wheel_radius" value="1.600e-01" />
+  
+  <!-- convert to property to use substitution in function -->
+  <xacro:property name="left_initial_positions_file" default="$(arg left_initial_positions_file)"/>
+  <xacro:property name="right_initial_positions_file" default="$(arg right_initial_positions_file)"/>
+
+  <!-- property for the body like a box -->
+  <xacro:property name="mass" value="50.0"/>
+  <xacro:property name="x" value="0.7"/>
+  <xacro:property name="y" value="0.6"/>
+  <xacro:property name="z" value="1.02"/>
+
+  <!-- world Link -->
+  <!-- <link name="world"/> -->
+    
+  <!-- Robot Footprint -->
+  <link name="base_footprint">
+    <origin xyz="0 0 0" rpy="-1.57 0 -1.57" />
+  </link>
+
+<!-- Base Link -->
+  <link name="base_link">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+	    <mass value="${mass}"/>
+      <inertia
+        ixx="${(1.0/12.0)*mass*(y**2 + z**2)}"
+        iyy="${(1.0/12.0)*mass*(x**2 + z**2)}"
+        izz="${(1.0/12.0)*mass*(x**2 + y**2)}"
+        ixy="0.0"
+        ixz="0.0"
+        iyz="0.0"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="-1.57 0 -1.57" />
+      <geometry>
+        <mesh filename="package://rosie_description/meshes/rosie/rosie_no_arms.dae" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="-1.57 0 -1.57" />
+      <geometry>
+              <mesh filename="package://rosie_description/meshes/rosie/rosie_collision.dae" />
+      </geometry>
+    </collision>
+    <!-- lmontagnon : added collision at wheel level on ground -->
+    <collision>
+      <geometry>
+          <box size="0.7 0.6 0.0001" />
+      </geometry>
+        <origin xyz="0 0 -0.0395" rpy="0 0 0" />
+    </collision>
+  </link>
+    
+  <joint name="base_link_fixed" type="fixed">
+    <parent link="base_footprint"/>
+    <child link="base_link"/>
+    <origin xyz="0 0 0.143" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Arms link -->
+  <link name="arm_world" />
+
+  <joint name="arm_world_base_link_joint" type="fixed">
+      <parent link="base_link"/>
+      <child link="arm_world"/>
+      <origin xyz="0 0 1.039" rpy="0 0 0"/>
+  </joint>
+  
+  <link name="left_arm_mount"/>
+  <joint name="left_arm_mount_joint" type="fixed">
+    <parent link="arm_world"/>
+    <child link="left_arm_mount"/>
+    <origin xyz="0 0.13 0" rpy="0 0 1.57"/>
+  </joint>
+  
+  <link name="right_arm_mount"/>
+  <joint name="right_arm_mount_joint" type="fixed">
+    <parent link="arm_world"/>
+    <child link="right_arm_mount"/>
+    <origin xyz="0 -0.13 0" rpy="0 0 -1.57"/>
+  </joint>
+
+
+    
+  <!--load dual arms robots-->
+  <xacro:load_robot 
+      parent="$(arg left_parent)"
+      arm="$(arg left_arm)"
+      gripper="$(arg left_gripper)"
+      gripper_joint_name="$(arg left_gripper_joint_name)"
+      gripper_max_velocity="$(arg left_gripper_max_velocity)"
+      gripper_max_force="$(arg left_gripper_max_force)"
+      dof="$(arg left_dof)"
+      vision="$(arg left_vision)"
+      robot_ip="$(arg left_robot_ip)"
+      username="$(arg left_username)"
+      password="$(arg left_password)"
+      port="$(arg left_port)"
+      port_realtime="$(arg left_port_realtime)"
+      session_inactivity_timeout_ms="$(arg left_session_inactivity_timeout_ms)"
+      connection_inactivity_timeout_ms="$(arg left_connection_inactivity_timeout_ms)"
+      use_internal_bus_gripper_comm="$(arg use_internal_bus_gripper_comm)"
+      prefix="$(arg left_prefix)"
+      use_fake_hardware="$(arg use_fake_hardware)"
+      mock_sensor_commands="$(arg mock_sensor_commands)"
+      sim_gazebo="$(arg sim_gazebo)"
+      sim_ignition="$(arg sim_ignition)"
+      sim_isaac="$(arg sim_isaac)"
+      initial_positions="${xacro.load_yaml(left_initial_positions_file)}">
+      <origin xyz="0 0 0" rpy="0 0 0" /> 
+  </xacro:load_robot>
+    
+  <xacro:load_robot
+      parent="$(arg right_parent)"
+      arm="$(arg right_arm)"
+      gripper="$(arg right_gripper)"
+      gripper_joint_name="$(arg right_gripper_joint_name)"
+      gripper_max_velocity="$(arg right_gripper_max_velocity)"
+      gripper_max_force="$(arg right_gripper_max_force)"
+      dof="$(arg right_dof)"
+      vision="$(arg right_vision)"
+      robot_ip="$(arg right_robot_ip)"
+      username="$(arg right_username)"
+      password="$(arg right_password)"
+      port="$(arg right_port)"
+      port_realtime="$(arg right_port_realtime)"
+      session_inactivity_timeout_ms="$(arg right_session_inactivity_timeout_ms)"
+      connection_inactivity_timeout_ms="$(arg right_connection_inactivity_timeout_ms)"
+      use_internal_bus_gripper_comm="$(arg use_internal_bus_gripper_comm)"
+      prefix="$(arg right_prefix)"
+      use_fake_hardware="$(arg use_fake_hardware)"
+      mock_sensor_commands="$(arg mock_sensor_commands)"
+      sim_gazebo="$(arg sim_gazebo)"
+      sim_ignition="$(arg sim_ignition)"
+      sim_isaac="$(arg sim_isaac)"
+      initial_positions="${xacro.load_yaml(right_initial_positions_file)}">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+  </xacro:load_robot>
+</robot>

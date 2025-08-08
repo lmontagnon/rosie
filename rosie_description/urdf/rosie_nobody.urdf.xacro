@@ -1,0 +1,238 @@
+<?xml version="1.0"?>
+
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="rosie">
+
+  <!-- Arguments -->
+    <xacro:arg name="left_prefix" default="left"/>
+    <xacro:arg name="left_arm"  default="gen3"/>
+    <xacro:arg name="left_gripper" default="robotiq_2f_85"/>
+    <xacro:arg name="left_dof"  default="7"/>
+    <xacro:arg name="left_vision" default="false"/>
+    <xacro:arg name="left_parent" default="arm_world"/>
+    <xacro:arg name="left_gripper_joint_name" default="finger_joint"/>
+    <xacro:arg name="left_robot_ip" default="192.168.42.191"/>
+    <xacro:arg name="left_username" default="admin"/>
+    <xacro:arg name="left_password" default="admin"/>
+    <xacro:arg name="left_port" default="10000"/>
+    <xacro:arg name="left_port_realtime" default="10001"/>
+    <xacro:arg name="left_session_inactivity_timeout_ms" default="60000"/>
+    <xacro:arg name="left_connection_inactivity_timeout_ms" default="2000"/>
+    <xacro:arg name="left_gripper_max_velocity" default="100.0" />
+    <xacro:arg name="left_gripper_max_force" default="100.0" />
+
+    <xacro:arg name="right_prefix" default="right"/>
+    <xacro:arg name="right_arm"  default="gen3"/>
+    <xacro:arg name="right_gripper" default="robotiq_2f_85"/>
+    <xacro:arg name="right_dof"  default="7"/>
+    <xacro:arg name="right_vision" default="false"/>
+    <xacro:arg name="right_parent" default="arm_world"/>
+    <xacro:arg name="right_gripper_joint_name" default="finger_joint"/>
+    <xacro:arg name="right_robot_ip" default="192.168.42.192"/>
+    <xacro:arg name="right_username" default="admin"/>
+    <xacro:arg name="right_password" default="admin"/>
+    <xacro:arg name="right_port" default="10000"/>
+    <xacro:arg name="right_port_realtime" default="10001"/>
+    <xacro:arg name="right_session_inactivity_timeout_ms" default="60000"/>
+    <xacro:arg name="right_connection_inactivity_timeout_ms" default="2000"/>
+    <xacro:arg name="right_gripper_max_velocity" default="100.0" />
+    <xacro:arg name="right_gripper_max_force" default="100.0" />
+
+    <xacro:arg name="use_internal_bus_gripper_comm" default="false" />
+    <xacro:arg name="use_fake_hardware" default="false" />
+    <xacro:arg name="fake_sensor_commands" default="false" />
+    <xacro:arg name="sim_gazebo" default="false" />
+    <xacro:arg name="sim_ignition" default="false" />
+    <xacro:arg name="sim_isaac" default="false" />
+    <xacro:arg name="gazebo_renderer" default="ogre"/>
+    <xacro:arg name="camera_width" default="640"/>
+    <xacro:arg name="camera_height" default="480"/>
+    <xacro:arg name="camera_fps" default="30"/>
+    <xacro:arg name="simulation_controllers" default="$(find rosie_description)/config/ros2_controllers.yaml" />
+    <xacro:arg name="moveit_active" default="false"/>
+    <!-- initial position for simulations (Mock Hardware, Gazebo, Ignition) -->
+    <xacro:arg name="initial_positions_file" default="$(find rosie_description)/config/gazebo_initial_joint_positions.yaml"/>
+
+
+  <!-- include files --> 
+    <xacro:include filename="$(find kortex_description)/robots/kortex_robot.xacro" />    
+
+    
+  
+ 
+    
+    <!-- convert to property to use substitution in function -->
+    <xacro:property name="initial_positions_file" default="$(arg initial_positions_file)"/>
+
+
+
+<!-- Arms link -->
+    <link name="arm_world" />
+    
+    <link name="world"/>
+
+    <joint name="arm_world_fixed" type="fixed">
+      <parent link="world"/>
+      <child link="arm_world"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </joint>
+    
+     <link name="left_arm_mount"/>
+    <joint name="left_arm_mount_joint" type="fixed">
+      <parent link="arm_world"/>
+      <child link="left_arm_mount"/>
+      <origin xyz="0 0.13 ${1.039-0.107}" rpy="0 0 0"/>
+    </joint>
+    
+    <link name="right_arm_mount"/>
+    <joint name="right_arm_mount_joint" type="fixed">
+      <parent link="arm_world"/>
+      <child link="right_arm_mount"/>
+      <origin xyz="0 -0.13 ${1.039-0.107}" rpy="0 0 0"/>
+    </joint>
+
+    
+ <!--load dual arms robots-->
+    <xacro:load_robot 
+        parent="left_arm_mount"
+        arm="$(arg left_arm)"
+        gripper="$(arg left_gripper)"
+        gripper_joint_name="$(arg left_gripper_joint_name)"
+        gripper_max_velocity="$(arg left_gripper_max_velocity)"
+        gripper_max_force="$(arg left_gripper_max_force)"
+        dof="$(arg left_dof)"
+        vision="$(arg left_vision)"
+        robot_ip="$(arg left_robot_ip)"
+        username="$(arg left_username)"
+        password="$(arg left_password)"
+        port="$(arg left_port)"
+        port_realtime="$(arg left_port_realtime)"
+        session_inactivity_timeout_ms="$(arg left_session_inactivity_timeout_ms)"
+        connection_inactivity_timeout_ms="$(arg left_connection_inactivity_timeout_ms)"
+        use_internal_bus_gripper_comm="$(arg use_internal_bus_gripper_comm)"
+        prefix="$(arg left_prefix)"
+        use_fake_hardware="$(arg use_fake_hardware)"
+        fake_sensor_commands="$(arg fake_sensor_commands)"
+        sim_gazebo="$(arg sim_gazebo)"
+        sim_ignition="$(arg sim_ignition)"
+        sim_isaac="$(arg sim_isaac)"
+        initial_positions="${xacro.load_yaml(initial_positions_file)}"
+        moveit_active="$(arg moveit_active)">
+        <origin xyz="0 0 0" rpy="0 0 0" /> 
+    </xacro:load_robot>
+    
+    <xacro:load_robot
+        parent="right_arm_mount"
+        arm="$(arg right_arm)"
+        gripper="$(arg right_gripper)"
+        gripper_joint_name="$(arg right_gripper_joint_name)"
+        gripper_max_velocity="$(arg right_gripper_max_velocity)"
+        gripper_max_force="$(arg right_gripper_max_force)"
+        dof="$(arg right_dof)"
+        vision="$(arg right_vision)"
+        robot_ip="$(arg right_robot_ip)"
+        username="$(arg right_username)"
+        password="$(arg right_password)"
+        port="$(arg right_port)"
+        port_realtime="$(arg right_port_realtime)"
+        session_inactivity_timeout_ms="$(arg right_session_inactivity_timeout_ms)"
+        connection_inactivity_timeout_ms="$(arg right_connection_inactivity_timeout_ms)"
+        use_internal_bus_gripper_comm="$(arg use_internal_bus_gripper_comm)"
+        prefix="$(arg right_prefix)"
+        use_fake_hardware="$(arg use_fake_hardware)"
+        fake_sensor_commands="$(arg fake_sensor_commands)"
+        sim_gazebo="$(arg sim_gazebo)"
+        sim_ignition="$(arg sim_ignition)"
+        sim_isaac="$(arg sim_isaac)"
+        initial_positions="${xacro.load_yaml(initial_positions_file)}"
+        moveit_active="$(arg moveit_active)">
+        <origin xyz="0 0 0" rpy="0 0 0" />
+    </xacro:load_robot>
+
+    <xacro:if value="$(arg sim_gazebo)">
+        <!-- Gazebo plugins -->
+        <gazebo reference="arm_world">
+        </gazebo>
+        <gazebo>
+          <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
+            <parameters>$(arg simulation_controllers)</parameters>
+          </plugin>
+        </gazebo>
+    </xacro:if>
+
+    <xacro:if value="$(arg sim_ignition)">
+        <!-- Gazebo plugins -->
+        <gazebo reference="arm_world">
+        </gazebo>
+        <gazebo>
+          <plugin filename="libign_ros2_control-system.so" name="ign_ros2_control::IgnitionROS2ControlPlugin">
+            <parameters>$(arg simulation_controllers)</parameters>
+            <controller_manager_node_name>controller_manager</controller_manager_node_name>
+          </plugin>
+          <plugin filename="libignition-gazebo-sensors-system.so" name="ignition::gazebo::systems::Sensors">
+            <render_engine>$(arg gazebo_renderer)</render_engine>
+          </plugin>
+        </gazebo>
+        <gazebo reference="camera_color_frame">
+          <sensor name="camera_sensor" type="rgbd_camera">
+            <camera>
+              <horizontal_fov>1.047</horizontal_fov>
+              <image>
+                <width>$(arg camera_width)</width>
+                <height>$(arg camera_height)</height>
+                <format>RGB_INT8</format>
+              </image>
+              <clip>
+                <near>0.1</near>
+                <far>5</far>
+              </clip>
+              <distortion>
+                <k1>0.0</k1>
+                <k2>0.0</k2>
+                <k3>0.0</k3>
+                <p1>0.0</p1>
+                <p2>0.0</p2>
+                <center>0.5 0.5</center>
+              </distortion>
+              <lens>
+                <intrinsics>
+                  <fx>554.25469</fx>
+                  <fy>554.25469</fy>
+                  <cx>320.5</cx>
+                  <cy>240.5</cy>
+                  <s>0</s>
+                </intrinsics>
+                <!-- These need to match the intrinsics above or
+                Ignition will default to different default values -->
+                <projection>
+                  <p_fx>554.25469</p_fx>
+                  <p_fy>554.25469</p_fy>
+                  <p_cx>320.5</p_cx>
+                  <p_cy>240.5</p_cy>
+                  <tx>0</tx>
+                  <ty>0</ty>
+                </projection>
+              </lens>
+              <noise>
+                <type>gaussian</type>
+                <mean>0</mean>
+                <stddev>0.00</stddev>
+              </noise>
+              <depth_camera>
+                <clip>
+                  <near>0.25</near>
+                  <far>5</far>
+                </clip>
+              </depth_camera>
+              <optical_frame_id>color_optical_frame</optical_frame_id>
+            </camera>
+            <ignition_frame_id>camera_color_frame</ignition_frame_id>
+            <always_on>1</always_on>
+            <update_rate>$(arg camera_fps)</update_rate>
+            <visualize>true</visualize>
+            <topic>wrist_mounted_camera</topic>
+            <enable_metrics>false</enable_metrics>
+          </sensor>
+        </gazebo>
+    </xacro:if>
+    
+</robot>

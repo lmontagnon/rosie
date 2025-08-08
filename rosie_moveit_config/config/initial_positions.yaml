@@ -1,0 +1,19 @@
+# Default initial positions for rosie's ros2_control fake system
+
+initial_positions:
+  leftjoint_1: 0
+  leftjoint_2: 0
+  leftjoint_3: 0
+  leftjoint_4: 0
+  leftjoint_5: 0
+  leftjoint_6: 0
+  leftjoint_7: 0
+  leftrobotiq_85_left_knuckle_joint: 0
+  rightjoint_1: 0
+  rightjoint_2: 0
+  rightjoint_3: 0
+  rightjoint_4: 0
+  rightjoint_5: 0
+  rightjoint_6: 0
+  rightjoint_7: 0
+  rightrobotiq_85_left_knuckle_joint: 0

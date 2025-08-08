@@ -1,0 +1,15 @@
+joint_1: 0.0
+joint_2: 0.0
+joint_3: 0.0
+joint_4: 0.0
+joint_5: 0.0
+joint_6: 0.0
+joint_7: 0.0
+
+#initial_joint_positions: "-J $(arg prefix)joint_1 1.57
+                        #-J $(arg prefix)joint_2 -0.35
+                        #-J $(arg prefix)joint_3 3.14
+                        #-J $(arg prefix)joint_4 -2.00
+                        #-J $(arg prefix)joint_5 0
+                        #-J $(arg prefix)joint_6 -1.00
+                        #-J $(arg prefix)joint_7 1.57"

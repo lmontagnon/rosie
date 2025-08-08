@@ -1,0 +1,75 @@
+# MoveIt uses this configuration for controller management
+trajectory_execution:
+  allowed_execution_duration_scaling: 1.2
+  allowed_goal_duration_margin: 0.5
+  allowed_start_tolerance: 0.05
+
+moveit_controller_manager: moveit_simple_controller_manager/MoveItSimpleControllerManager
+
+moveit_simple_controller_manager:
+  controller_names:
+    - left_joint_trajectory_controller
+    - right_joint_trajectory_controller
+    # - both_arms_joint_trajectory_controller
+    - left_robotiq_gripper_controller
+    - right_robotiq_gripper_controller
+
+  left_joint_trajectory_controller:
+    type: FollowJointTrajectory
+    joints:
+      - leftjoint_1
+      - leftjoint_2
+      - leftjoint_3
+      - leftjoint_4
+      - leftjoint_5
+      - leftjoint_6
+      - leftjoint_7
+    action_ns: follow_joint_trajectory
+    default: true
+
+  right_joint_trajectory_controller:
+    type: FollowJointTrajectory
+    joints:
+      - rightjoint_1
+      - rightjoint_2
+      - rightjoint_3
+      - rightjoint_4
+      - rightjoint_5
+      - rightjoint_6
+      - rightjoint_7
+    action_ns: follow_joint_trajectory
+    default: true
+
+  # both_arms_joint_trajectory_controller:
+  #   type: FollowJointTrajectory
+  #   joints:
+  #     - leftjoint_1
+  #     - leftjoint_2
+  #     - leftjoint_3
+  #     - leftjoint_4
+  #     - leftjoint_5
+  #     - leftjoint_6
+  #     - leftjoint_7
+  #     - rightjoint_1
+  #     - rightjoint_2
+  #     - rightjoint_3
+  #     - rightjoint_4
+  #     - rightjoint_5
+  #     - rightjoint_6
+  #     - rightjoint_7
+  #   action_ns: follow_joint_trajectory
+  #   default: false
+
+  left_robotiq_gripper_controller:
+    type: GripperCommand
+    joints:
+      - leftrobotiq_85_left_knuckle_joint
+    action_ns: gripper_cmd
+    default: true
+
+  right_robotiq_gripper_controller:
+    type: GripperCommand
+    joints:
+      - rightrobotiq_85_left_knuckle_joint
+    action_ns: gripper_cmd
+    default: true

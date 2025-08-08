@@ -1,0 +1,154 @@
+controller_manager:
+  ros__parameters:
+    update_rate: 500  # Hz
+
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+    left_joint_trajectory_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+
+    right_joint_trajectory_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+    
+    both_arms_joint_trajectory_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+
+    twist_controller:
+      type: picknik_twist_controller/PicknikTwistController
+
+    left_robotiq_gripper_controller:
+      type: position_controllers/GripperActionController
+
+    right_robotiq_gripper_controller:
+      type: position_controllers/GripperActionController
+
+    fault_controller:
+      type: picknik_reset_fault_controller/PicknikResetFaultController
+
+left_joint_trajectory_controller:
+  ros__parameters:
+    joints:
+      - leftjoint_1
+      - leftjoint_2
+      - leftjoint_3
+      - leftjoint_4
+      - leftjoint_5
+      - leftjoint_6
+      - leftjoint_7
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
+      - velocity
+    state_publish_rate: 100.0
+    action_monitor_rate: 20.0
+    allow_partial_joints_goal: false
+    constraints:
+      stopped_velocity_tolerance: 0.0
+      goal_time: 0.0
+    state: inactive 
+
+left_robotiq_gripper_controller:
+  ros__parameters:
+    default: true
+    joint: leftrobotiq_85_left_knuckle_joint
+    allow_stalling: true
+
+
+right_joint_trajectory_controller:
+  ros__parameters:
+    joints:
+      - rightjoint_1
+      - rightjoint_2
+      - rightjoint_3
+      - rightjoint_4
+      - rightjoint_5
+      - rightjoint_6
+      - rightjoint_7
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
+      - velocity
+    state_publish_rate: 100.0
+    action_monitor_rate: 20.0
+    allow_partial_joints_goal: false
+    constraints:
+      stopped_velocity_tolerance: 0.0
+      goal_time: 0.0
+    state: inactive 
+
+right_robotiq_gripper_controller:
+  ros__parameters:
+    default: true
+    joint: rightrobotiq_85_left_knuckle_joint
+    allow_stalling: true
+
+both_arms_joint_trajectory_controller:
+  ros__parameters:
+    joints:
+      - leftjoint_1
+      - leftjoint_2
+      - leftjoint_3
+      - leftjoint_4
+      - leftjoint_5
+      - leftjoint_6
+      - leftjoint_7
+      - rightjoint_1
+      - rightjoint_2
+      - rightjoint_3
+      - rightjoint_4
+      - rightjoint_5
+      - rightjoint_6
+      - rightjoint_7
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
+      - velocity
+    gains:
+      leftjoint_1:
+        p: 60.0
+        d: 2.0
+        angle_wraparound: true
+      rightjoint_1:
+        p: 60.0
+        d: 2.0
+        angle_wraparound: true
+      leftjoint_3:
+        p: 60.0
+        d: 2.0
+        angle_wraparound: true
+      rightjoint_3:
+        p: 60.0
+        d: 2.0
+        angle_wraparound: true
+      leftjoint_5:
+        p: 60.0
+        d: 2.0
+        angle_wraparound: true
+      rightjoint_5:
+        p: 60.0
+        d: 2.0
+        angle_wraparound: true
+      leftjoint_7:
+        p: 60.0
+        d: 2.0
+        angle_wraparound: true
+      rightjoint_7:
+        p: 60.0
+        d: 2.0 
+        angle_wraparound: true
+    allow_nonzero_velocity_at_trajectory_end: true
+
+twist_controller:
+  ros__parameters:
+    joint: tcp
+    interface_names:
+      - twist.linear.x
+      - twist.linear.y
+      - twist.linear.z
+      - twist.angular.x
+      - twist.angular.y
+      - twist.angular.z

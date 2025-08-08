@@ -1,0 +1,110 @@
+<?xml version="1.0"?>
+
+<robot name="dual_robot" xmlns:xacro="http://ros.org/wiki/xacro">
+    <!--arguments for left arm-->
+    <xacro:arg name="left_arm"  default="gen3"/>
+    <xacro:arg name="left_gripper" default="robotiq_2f_85"/>
+    <xacro:arg name="left_dof"  default="7"/>
+    <xacro:arg name="left_vision" default="true"/>
+    <xacro:arg name="left_prefix" default="left"/>
+    <xacro:arg name="left_name" default="left_robot_name"/>
+    <xacro:arg name="left_robot_ip" default="192.168.42.191"/>
+
+    <!--arguments for right arm-->
+    <xacro:arg name="right_arm"  default="gen3"/>
+    <xacro:arg name="right_gripper" default="robotiq_2f_85"/>
+    <xacro:arg name="right_dof"  default="7"/>
+    <xacro:arg name="right_vision" default="true"/>
+    <xacro:arg name="right_prefix" default="right"/>
+    <xacro:arg name="right_name" default="right_robot_name"/>
+    <xacro:arg name="right_robot_ip" default="192.168.42.192"/>
+  
+
+    <xacro:arg name="username" default="admin" />
+    <xacro:arg name="password" default="admin" />
+    <xacro:arg name="port" default="10000" />
+    <xacro:arg name="port_realtime" default="10001" />
+    <xacro:arg name="session_inactivity_timeout_ms" default="60000" />
+    <xacro:arg name="connection_inactivity_timeout_ms" default="2000" />
+    <xacro:arg name="gripper_joint_name" default="finger_joint" />
+    <xacro:arg name="gripper_max_velocity" default="100.0" />
+    <xacro:arg name="gripper_max_force" default="100.0" />
+    <xacro:arg name="use_internal_bus_gripper_comm" default="false" />
+    <xacro:arg name="use_fake_hardware" default="false" />
+    <xacro:arg name="fake_sensor_commands" default="false" />
+    <xacro:arg name="sim_gazebo" default="false" />
+    <xacro:arg name="sim_ignition" default="false" />
+    <xacro:arg name="sim_isaac" default="false" />
+    <xacro:arg name="gazebo_renderer" default="ogre"/>
+    <xacro:arg name="camera_width" default="640"/>
+    <xacro:arg name="camera_height" default="480"/>
+    <xacro:arg name="camera_fps" default="6"/>
+    <xacro:arg name="simulation_controllers" default="$(find kortex_description)/arm/gen3/7dof/config/ros2_controllers.yaml" />
+
+    <xacro:include filename="$(find kortex_description)/robots/kortex_robot.xacro" />
+
+    <link name="arm_world" />
+    <joint name="world_to_$(arg left_prefix)root" type="fixed">
+        <child link="$(arg left_prefix)base_link" />
+        <parent link="arm_world" />
+        <!-- Here you can change the origin of the left arm-->
+        <origin xyz="0 0.13 ${1.039-0.107}" rpy="0 0 1.57" />
+    </joint>
+    <joint name="world_to_$(arg right_prefix)root" type="fixed">
+        <child link="$(arg right_prefix)base_link" />
+        <parent link="arm_world" />
+        <!-- Here you can change the origin of the right arm -->
+        <origin xyz="0 -0.13 ${1.039-0.107}" rpy="0 0 -1.57" />
+    </joint>
+
+    <xacro:load_robot
+        arm="$(arg left_arm)"
+        gripper="$(arg left_gripper)"
+        dof="$(arg left_dof)"
+        vision="$(arg left_vision)"
+        prefix="$(arg left_prefix)"
+        parent="arm_world"
+        gripper_joint_name="$(arg gripper_joint_name)"
+        gripper_max_velocity="$(arg gripper_max_velocity)"
+        gripper_max_force="$(arg gripper_max_force)"
+        robot_ip="$(arg left_robot_ip)"
+        username="$(arg username)"
+        password="$(arg password)"
+        port="$(arg port)"
+        port_realtime="$(arg port_realtime)"
+        session_inactivity_timeout_ms="$(arg session_inactivity_timeout_ms)"
+        connection_inactivity_timeout_ms="$(arg connection_inactivity_timeout_ms)"
+        use_internal_bus_gripper_comm="$(arg use_internal_bus_gripper_comm)"
+        use_fake_hardware="$(arg use_fake_hardware)"
+        fake_sensor_commands="$(arg fake_sensor_commands)"
+        sim_gazebo="$(arg sim_gazebo)"
+        sim_ignition="$(arg sim_ignition)"
+        sim_isaac="$(arg sim_isaac)" >
+        <origin xyz="0 0 0" rpy="0 0 0" />  <!-- position robot in the world -->
+    </xacro:load_robot>
+    <xacro:load_robot
+        arm="$(arg right_arm)"
+        gripper="$(arg right_gripper)"
+        dof="$(arg right_dof)"
+        vision="$(arg right_vision)"
+        prefix="$(arg right_prefix)"
+        parent="arm_world"
+        gripper_joint_name="$(arg gripper_joint_name)"
+        gripper_max_velocity="$(arg gripper_max_velocity)"
+        gripper_max_force="$(arg gripper_max_force)"
+        robot_ip="$(arg right_robot_ip)"
+        username="$(arg username)"
+        password="$(arg password)"
+        port="$(arg port)"
+        port_realtime="$(arg port_realtime)"
+        session_inactivity_timeout_ms="$(arg session_inactivity_timeout_ms)"
+        connection_inactivity_timeout_ms="$(arg connection_inactivity_timeout_ms)"
+        use_internal_bus_gripper_comm="$(arg use_internal_bus_gripper_comm)"
+        use_fake_hardware="$(arg use_fake_hardware)"
+        fake_sensor_commands="$(arg fake_sensor_commands)"
+        sim_gazebo="$(arg sim_gazebo)"
+        sim_ignition="$(arg sim_ignition)"
+        sim_isaac="$(arg sim_isaac)" >
+        <origin xyz="0 0 0" rpy="0 0 0" />  <!-- position robot in the world -->
+       </xacro:load_robot>
+</robot>

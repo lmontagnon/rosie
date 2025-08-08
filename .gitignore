@@ -1,0 +1,13 @@
+# ROS 2 / colcon
+build/
+install/
+log/
+.colcon*
+.ros/
+# VS Code
+.vscode/
+# Python
+__pycache__/
+*.pyc
+# Developement Package (not in use for Rosie)
+dual_arms_moveit_config/
